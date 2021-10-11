@@ -79,7 +79,7 @@
 }
 
 .note-content {
-	min-height: 2em;
-	min-width: 200px;
+	min-height: 10em;
+	width: 100%;
 	background-color: #fff;
 }

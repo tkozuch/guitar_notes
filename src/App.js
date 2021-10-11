@@ -7,10 +7,29 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import React from 'react';
 
+import {
+	EditorContainer,
+	Editor,
+	InlineToggleButton,
+	EditorToolbar,
+	ToggleButtonGroup,
+} from 'draft-js-wysiwyg';
+import { EditorState } from 'draft-js';
+import {
+	FormatBold as FormatBoldIcon,
+	FormatItalic as FormatItalicIcon,
+} from '@material-ui/icons';
+import 'draft-js/dist/Draft.css';
 
 library.add(faCaretDown);
 
 function App() {
+	const [editorState, setEditorState] = React.useState(() =>
+		EditorState.createEmpty()
+	);
+
+	const editor = React.useRef(null);
+
 	const [expandedNote, setExpandedNote] = useState(-1);
 	const [inExpandedState, setInExpandedState] = useState(false);
 	const [songNotes, setSongNotes] = useState(notes);
@@ -52,7 +71,22 @@ function App() {
 										</button>
 									</div>
 									<div className='note-content'>
-
+										<EditorContainer
+											editorState={editorState}
+											onChange={setEditorState}
+										>
+											<EditorToolbar>
+												<ToggleButtonGroup size='small'>
+													<InlineToggleButton value='BOLD'>
+														<FormatBoldIcon />
+													</InlineToggleButton>
+													<InlineToggleButton value='ITALIC'>
+														<FormatItalicIcon />
+													</InlineToggleButton>
+												</ToggleButtonGroup>
+											</EditorToolbar>
+											<Editor ref={editor} placeholder='Enter some text..' />
+										</EditorContainer>
 										{/* {noteContent.map((note, index) => {
 											{
 												if (note.type === 'YT') {
