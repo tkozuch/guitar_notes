@@ -1,85 +1,99 @@
 :root {
-	box-sizing: border-box;
+  box-sizing: border-box;
 
-	--color-one: #4ea665;
-	--color-four: #c9f2da;
-	--color-three: #38d9f2;
-	--color-two: #8694d1;
-	--color-five: #002cf2;
+  --color-one: #4ea665;
+  --color-four: #c9f2da;
+  --color-three: #38d9f2;
+  --color-two: #8694d1;
+  --color-five: #002cf2;
 
-	--color-x: rgb(150, 191, 238);
+  --color-x: rgb(150, 191, 238);
 }
 *,
 ::before,
 ::after {
-	box-sizing: inherit;
+  box-sizing: inherit;
 }
 
 .App {
-	background-color: var(--color-two);
+  background-color: var(--color-two);
 }
 
 .container {
-	min-height: 100vh;
-	max-width: 1300px;
-	margin: auto;
-	background-color: var(--color-four);
-	padding: 5% 10%;
+  min-height: 100vh;
+  max-width: 1300px;
+  margin: auto;
+  background-color: var(--color-four);
+  padding: 5% 10%;
 
-	display: flex;
-	flex-direction: column;
-	align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
-	border-left: 10px var(--color-two) dotted;
-	/* border-right: 10px var(--color-two) dashed; */
+  border-left: 10px var(--color-two) dotted;
+  /* border-right: 10px var(--color-two) dashed; */
 }
 
 .header {
-	font-size: calc(10px + 3vmin);
-	color: var(--color-two);
-	margin-bottom: 2em;
+  font-size: calc(10px + 3vmin);
+  color: var(--color-two);
+  margin-bottom: 2em;
   font-weight: 700;
 }
 
 .note-header {
-	background-color: var(--color-x);
-	width: 100%;
-	padding: 0 0.5em;
+  background-color: var(--color-x);
+  width: 100%;
+  padding: 0 0.5em;
 
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
   color: white;
-	border: 1px solid var(--color-four);
-	border-radius: 1px;
+  border: 1px solid var(--color-four);
+  border-radius: 1px;
 }
 
 .note-header__icon {
-	color: white;
-	min-height: 20px;
-	min-width: 20px;
+  color: white;
+  min-height: 20px;
+  min-width: 20px;
 }
 
 .note-header > button {
-	width: 5em;
-	height: 3em;
-	background-color: inherit;
-	border: 0;
-	cursor: pointer;
-	text-align: right;
-    color: white;
+  width: 5em;
+  height: 3em;
+  background-color: inherit;
+  border: 0;
+  cursor: pointer;
+  text-align: right;
+  color: white;
 }
 .note-header > button:hover {
-	color: var(--color-one);
+  color: var(--color-one);
 }
 
 .App-link {
-	color: #61dafb;
+  color: #61dafb;
 }
 
 .note-content {
-	min-height: 10em;
-	width: 100%;
-	background-color: #fff;
+  min-height: 10vh;
+  min-width: 100%;
+}
+
+.note-content > * + * {
+  margin-top: 0.5em;
+}
+
+.draft-container {
+  background-color: #fff;
+}
+
+.note-content__yt-note {
+  display: flex;
+}
+.note-content__yt-note .draft-container {
+  
 }

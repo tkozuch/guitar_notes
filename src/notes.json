@@ -22,7 +22,11 @@
     "notes": [
       {
         "type": "YT",
-        "frame": "<iframe width='560' height='315' src='https://www.youtube-nocookie.com/embed/Co8ERF2QLCc' title='YouTube video player' frameborder='0' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' allowfullscreen></iframe>"
+        "ytUrl": "https://www.youtube-nocookie.com/embed/Co8ERF2QLCc"
+      },
+      {
+        "type": "other",
+        "text": "https://tabs.ultimate-guitar.com/tab/aphex-twin/flim-tabs-1084926 \t\t tam miedzy tymi dwoma podwojnymi pull ofami w drugiej czesci prawie nie ma przerwy jak cos."
       }
     ]
   }

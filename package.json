@@ -14,6 +14,7 @@
     "@testing-library/user-event": "^12.8.3",
     "draft-js": "^0.11.7",
     "draft-js-wysiwyg": "^1.2.1",
+    "interweave": "^12.8.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "4.0.3",
