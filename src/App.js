@@ -1,39 +1,65 @@
 import "./App.css";
-import { useState } from "react";
-
 import notes from "./notes.json";
+import { convertFromRaw, convertToRaw } from "draft-js";
+// import { RichText } from "./components/RichText";
+
+import { React, useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
-import React from "react";
-import { Markup } from "interweave";
 
-import {
-  EditorContainer,
-  Editor,
-  InlineToggleButton,
-  EditorToolbar,
-  ToggleButtonGroup,
-} from "draft-js-wysiwyg";
+import { Editor } from "react-draft-wysiwyg";
 import { EditorState } from "draft-js";
-import {
-  FormatBold as FormatBoldIcon,
-  FormatItalic as FormatItalicIcon,
-} from "@material-ui/icons";
-import "draft-js/dist/Draft.css";
+import "../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 library.add(faCaretDown);
 
+const EMPTY_STATE = {
+  blocks: [],
+  entityMap: {},
+};
+
+const content = {
+  entityMap: {},
+  blocks: [
+    {
+      key: "637gr",
+      text: "Initialized from content state.",
+      type: "unstyled",
+      depth: 0,
+      inlineStyleRanges: [],
+      entityRanges: [],
+      data: {},
+    },
+  ],
+};
+
+// function App() {
+//   const [state, setState] = useState(null);
+
+//   useEffect(() => {
+//     console.log("state, ", state);
+//   }, [state]);
+
+//   return (
+//     <>
+//       <Editor
+//         defaultContentState={content}
+//         onContentStateChange={(content) => {
+//           setState(content);
+//         }}
+//       ></Editor>
+//       <Editor contentState={state}></Editor>
+//     </>
+//   );
+// }
+
 function App() {
-  const [editorState, setEditorState] = React.useState(() =>
-    EditorState.createEmpty()
-  );
-
-  const editor = React.useRef(null);
-
   const [expandedNote, setExpandedNote] = useState(-1);
   const [inExpandedState, setInExpandedState] = useState(false);
   const [songNotes, setSongNotes] = useState(notes);
+  const [expandedNoteContent, setExpandedNoteContent] = useState(() => null);
+  
 
   function toggleNoteExpansion(index) {
     if (inExpandedState) {
@@ -44,10 +70,49 @@ function App() {
     }
   }
 
+  useEffect(() => {
+    fetch("http://127.0.0.1:8000/notes", {
+      method: "GET",
+    })
+      .then((response) => response.json())
+      .then((notesData) => {
+        console.log("goot", notesData);
+        setSongNotes(notesData);
+      });
+
+    // listen for when to Save notes.
+    // TODO: not working, probably has constant songNotes value.
+    // document.addEventListener("keydown", function (event) {
+    //   if (event.ctrlKey && event.key === "s") {
+    //     event.preventDefault();
+    //     console.log("saving");
+    //     fetch("http://127.0.0.1:8000/notes", {
+    //       method: "POST",
+    //       body: JSON.stringify(songNotes),
+    //     });
+    //   }
+    // });
+  }, []);
+
+  useEffect(() => {
+    if (inExpandedState) {
+      const songNotesCopy = [...songNotes];
+      console.log("content changing, ", expandedNoteContent);
+      songNotesCopy[expandedNote].content = expandedNoteContent;
+      setSongNotes(songNotesCopy);
+      console.log("About to POST");
+      fetch("http://127.0.0.1:8000/notes", {
+        method: "POST",
+        body: JSON.stringify(songNotes),
+      });
+    }
+  }, [expandedNoteContent]);
+
   return (
     <div className="App">
       <div className="container">
         <div className="header">Co grać na gitarze</div>
+
         {!inExpandedState
           ? songNotes.map((note, index) => {
               return (
@@ -59,10 +124,8 @@ function App() {
                 </div>
               );
             })
-          : (() => {
+          : (function renderNote() {
               const note = songNotes[expandedNote];
-              const noteContent = note.notes;
-
               return (
                 <>
                   <div className="note-header">
@@ -72,68 +135,13 @@ function App() {
                     </button>
                   </div>
                   <div className="note-content">
-                    {noteContent.map((note, index) => {
-                      if (note.type === "YT") {
-                        return (
-                          <div className="note-content__yt-note">
-                            <iframe
-                              width="560"
-                              height="315"
-                              src={note.ytUrl}
-                              title="YouTube video player"
-                              frameborder="0"
-                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                              allowfullscreen
-                            ></iframe>
-                            <EditorContainer
-                              editorState={editorState}
-                              onChange={setEditorState}
-                            >
-                              <EditorToolbar>
-                                <ToggleButtonGroup size="small">
-                                  <InlineToggleButton value="BOLD">
-                                    <FormatBoldIcon />
-                                  </InlineToggleButton>
-                                  <InlineToggleButton value="ITALIC">
-                                    <FormatItalicIcon />
-                                  </InlineToggleButton>
-                                </ToggleButtonGroup>
-                              </EditorToolbar>
-                              <Editor
-                                ref={editor}
-                                placeholder="Enter some text.."
-                              />
-                            </EditorContainer>
-                          </div>
-                        );
-                      } else if (note.type === "other") {
-                        return (
-                          <div className="note-content__other-note">
-                            <EditorContainer
-                              editorState={editorState}
-                              onChange={setEditorState}
-                            >
-                              <EditorToolbar>
-                                <ToggleButtonGroup size="small">
-                                  <InlineToggleButton value="BOLD">
-                                    <FormatBoldIcon />
-                                  </InlineToggleButton>
-                                  <InlineToggleButton value="ITALIC">
-                                    <FormatItalicIcon />
-                                  </InlineToggleButton>
-                                </ToggleButtonGroup>
-                              </EditorToolbar>
-                              <Editor
-                                ref={editor}
-                                placeholder="Enter some text.."
-                              />
-                            </EditorContainer>
-                          </div>
-                        );
-                      } else {
-                        throw new Error("Wrong note type. What are you doing?");
-                      }
-                    })}
+                    <Editor
+                      toolbarClassName="rich-text__toolbar"
+                      onContentStateChange={(contentState) => {
+                        setExpandedNoteContent(contentState);
+                      }}
+                      contentState={note.content}
+                    ></Editor>
                   </div>
                 </>
               );
