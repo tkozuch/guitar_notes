@@ -55,18 +55,22 @@ const content = {
 // }
 
 function App() {
-  const [expandedNote, setExpandedNote] = useState(-1);
-  const [inExpandedState, setInExpandedState] = useState(false);
+  const [expandedNote, setExpandedNote] = useState({
+    index: -1,
+    note: {
+      title: undefined,
+      content: undefined,
+    },
+  });
   const [songNotes, setSongNotes] = useState(notes);
-  const [expandedNoteContent, setExpandedNoteContent] = useState(() => null);
-  
+
+  const inExpandedState = () => expandedNote.index !== -1;
 
   function toggleNoteExpansion(index) {
-    if (inExpandedState) {
-      setInExpandedState(false);
+    if (inExpandedState()) {
+      setExpandedNote({ index: -1, note: undefined });
     } else {
-      setExpandedNote(index);
-      setInExpandedState(true);
+      setExpandedNote({ index, note: songNotes[index] });
     }
   }
 
@@ -79,26 +83,13 @@ function App() {
         console.log("goot", notesData);
         setSongNotes(notesData);
       });
-
-    // listen for when to Save notes.
-    // TODO: not working, probably has constant songNotes value.
-    // document.addEventListener("keydown", function (event) {
-    //   if (event.ctrlKey && event.key === "s") {
-    //     event.preventDefault();
-    //     console.log("saving");
-    //     fetch("http://127.0.0.1:8000/notes", {
-    //       method: "POST",
-    //       body: JSON.stringify(songNotes),
-    //     });
-    //   }
-    // });
   }, []);
 
   useEffect(() => {
-    if (inExpandedState) {
+    if (inExpandedState()) {
       const songNotesCopy = [...songNotes];
-      console.log("content changing, ", expandedNoteContent);
-      songNotesCopy[expandedNote].content = expandedNoteContent;
+      console.log("n: ", songNotesCopy[expandedNote.index], expandedNote.index);
+      songNotesCopy[expandedNote.index].content = expandedNote.note.content;
       setSongNotes(songNotesCopy);
       console.log("About to POST");
       fetch("http://127.0.0.1:8000/notes", {
@@ -106,46 +97,51 @@ function App() {
         body: JSON.stringify(songNotes),
       });
     }
-  }, [expandedNoteContent]);
+  }, [expandedNote.note.content]);
 
   return (
     <div className="App">
       <div className="container">
         <div className="header">Co grać na gitarze</div>
 
-        {!inExpandedState
-          ? songNotes.map((note, index) => {
-              return (
-                <div className="note-header" key={index}>
-                  <span className="note-header__text">{note.title}</span>
-                  <button onClick={() => toggleNoteExpansion(index)}>
-                    <FontAwesomeIcon icon="caret-down" size="3x" />
-                  </button>
-                </div>
-              );
-            })
-          : (function renderNote() {
-              const note = songNotes[expandedNote];
-              return (
-                <>
-                  <div className="note-header">
-                    <span className="note-header__text">{note.title}</span>
-                    <button onClick={() => toggleNoteExpansion()}>
-                      <FontAwesomeIcon icon="caret-down" size="3x" />
-                    </button>
-                  </div>
-                  <div className="note-content">
-                    <Editor
-                      toolbarClassName="rich-text__toolbar"
-                      onContentStateChange={(contentState) => {
-                        setExpandedNoteContent(contentState);
-                      }}
-                      contentState={note.content}
-                    ></Editor>
-                  </div>
-                </>
-              );
-            })()}
+        {!inExpandedState() ? (
+          songNotes.map((note, index) => {
+            return (
+              <div className="note-header" key={index}>
+                <span className="note-header__text">{note.title}</span>
+                <button onClick={() => toggleNoteExpansion(index)}>
+                  <FontAwesomeIcon icon="caret-down" size="3x" />
+                </button>
+              </div>
+            );
+          })
+        ) : (
+          <>
+            <div className="note-header">
+              <span className="note-header__text">
+                {expandedNote.note.title}
+              </span>
+              <button onClick={() => toggleNoteExpansion()}>
+                <FontAwesomeIcon icon="caret-down" size="3x" />
+              </button>
+            </div>
+            <div className="note-content">
+              <Editor
+                toolbarClassName="rich-text__toolbar"
+                onContentStateChange={(contentState) => {
+                  setExpandedNote({
+                    index: expandedNote.index,
+                    note: {
+                      ...expandedNote,
+                      content: contentState,
+                    },
+                  });
+                }}
+                contentState={expandedNote.note.content}
+              ></Editor>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
