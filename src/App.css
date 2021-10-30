@@ -23,6 +23,8 @@
   max-width: 1300px;
   margin: auto;
   background-color: var(--color-four);
+
+  /* background-image: url("./ruled-paper-sheet-500x500.jpg");  */
   padding: 5% 10%;
 
   display: flex;
@@ -45,7 +47,6 @@
   padding: 0 0.5em;
 
   display: flex;
-  justify-content: space-between;
   align-items: center;
 
   color: white;
@@ -68,6 +69,13 @@
 }
 .note-header > button:hover {
   color: var(--color-one);
+}
+.note-header__minus-button {
+  margin-left: auto;
+  margin-right: 1em;
+}
+.note-header__minus-button > * {
+  color: rgb(141, 29, 29);
 }
 
 .note-content {
