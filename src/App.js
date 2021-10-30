@@ -132,7 +132,11 @@ function App() {
                     className="note-header__toggle-button"
                     onClick={() => toggleNoteExpansion(index)}
                   >
-                    <FontAwesomeIcon icon="caret-down" size="3x" />
+                    <FontAwesomeIcon
+                      icon="caret-down"
+                      className="down_icon"
+                      size="3x"
+                    />
                   </button>
                 </div>
               );
@@ -157,7 +161,11 @@ function App() {
                 {expandedNote.note.title}
               </span>
               <button onClick={() => toggleNoteExpansion()}>
-                <FontAwesomeIcon icon="caret-down" size="3x" />
+                <FontAwesomeIcon
+                  icon="caret-down"
+                  className="down_icon"
+                  size="3x"
+                />
               </button>
             </div>
             <div className="note-content">

@@ -1,11 +1,20 @@
 :root {
   box-sizing: border-box;
 
+  /* previous colors */
   --color-one: #4ea665;
   --color-four: #c9f2da;
   --color-three: #38d9f2;
   --color-two: #8694d1;
   --color-five: #002cf2;
+
+  /* new colors */
+  --whiteish: #f6ffe3;
+  --yellowish: #fae466;
+  --brownish: #3f3019;
+  --brownish2: #826437; /* 2 for being lighter, 3, 4 etc will be even brighter */
+  --greenish: #a2ffae;
+  --redish: #fa7d50;
 
   --color-x: rgb(150, 191, 238);
 }
@@ -16,47 +25,40 @@
 }
 
 .App {
-  background-color: var(--color-two);
+  background-color: var(--whiteish);
 }
 .container {
   min-height: 100vh;
   max-width: 1300px;
   margin: auto;
-  background-color: var(--color-four);
-
-  /* background-image: url("./ruled-paper-sheet-500x500.jpg");  */
   padding: 5% 10%;
 
   display: flex;
   flex-direction: column;
   align-items: center;
 
-  border-left: 10px var(--color-two) dotted;
-  /* border-right: 10px var(--color-two) dashed; */
+  border-left: 10px var(--yellowish) solid;
+  border-right: 10px var(--yellowish) solid;
 }
 .header {
-  font-size: calc(10px + 3vmin);
-  color: var(--color-two);
+  font-size: 3rem;
+  color: var(--brownish2);
   margin-bottom: 2em;
   font-weight: 700;
 }
 
 .note-header {
-  background-color: var(--color-x);
+  background-color: var(--yellowish);
   width: 100%;
   padding: 0 0.5em;
 
   display: flex;
   align-items: center;
 
-  color: white;
-  border: 1px solid var(--color-four);
+  color: var(--brownish2);
+  font-weight: bold;
+  border-bottom: 1px solid var(--whiteish);
   border-radius: 1px;
-}
-.note-header__icon {
-  color: white;
-  min-height: 20px;
-  min-width: 20px;
 }
 .note-header > button {
   width: 5em;
@@ -67,17 +69,16 @@
   text-align: right;
   color: white;
 }
-.note-header > button:hover {
-  color: var(--color-one);
+.note-header > button:hover .down_icon {
+  filter: drop-shadow(0 0 2px rgb(0 0 0 / 0.4));
 }
 .note-header__minus-button {
   margin-left: auto;
   margin-right: 1em;
 }
 .note-header__minus-button > * {
-  color: rgb(141, 29, 29);
+  color: var(--redish);
 }
-
 .note-content {
   min-height: 10vh;
   min-width: 100%;
@@ -98,6 +99,5 @@
   flex-grow: 1;
 }
 .rdw-editor-main {
-  /* height: 10vh; */
   background-color: #fff;
 }
