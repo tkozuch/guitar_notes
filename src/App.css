@@ -63,20 +63,23 @@
 .note-header > button {
   width: 5em;
   height: 3em;
+  margin-left: auto;
   background-color: inherit;
   border: 0;
   cursor: pointer;
   text-align: right;
-  color: white;
+}
+.note-header .down_icon {
+  color: var(--whiteish);
+}
+.note-header.note-header--clicked .down_icon {
+  color: var(--redish);
 }
 .note-header > button:hover .down_icon {
   filter: drop-shadow(0 0 2px rgb(0 0 0 / 0.4));
 }
-.note-header__minus-button {
-  margin-left: auto;
-  margin-right: 1em;
-}
-.note-header__minus-button > * {
+.note-header .minus_icon {
+  margin-left: 4em;
   color: var(--redish);
 }
 .note-content {
@@ -85,6 +88,12 @@
   flex-grow: 1;
   display: flex;
   flex-direction: column;
+}
+.note-header--clicked {
+  filter: url("#filter");
+  filter: hue-rotate(20deg) grayscale(70%);
+  /* filter: contrast(0) sepia(100%) hue-rotate(116deg) brightness(1.4)
+    saturate(0.28); */
 }
 
 /* Make wrapper visible only on focus. */

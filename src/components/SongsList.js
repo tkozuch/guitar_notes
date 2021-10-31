@@ -1,0 +1,3 @@
+function SongsList({titles}) {
+    
+}

@@ -7,15 +7,15 @@ import {
   faCaretDown,
   faMinus,
   faPlus,
+  faTrashAlt,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { Editor } from "react-draft-wysiwyg";
-import { ContentState } from "draft-js";
 import "../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
-library.add(faCaretDown, faMinus, faPlus);
+library.add(faCaretDown, faMinus, faPlus, faTrashAlt);
 
-const rawState = {
+const emptyState = {
   content: {
     blocks: [
       {
@@ -31,7 +31,6 @@ const rawState = {
     entityMap: {},
   },
 };
-console.log("RS created.", rawState);
 
 function App() {
   const [expandedNote, setExpandedNote] = useState({
@@ -42,6 +41,7 @@ function App() {
     },
   });
   const [songNotes, setSongNotes] = useState([]);
+  const noteClicked = songNotes.filter((note) => note.clicked);
 
   const inExpandedState = () => expandedNote.index !== -1;
 
@@ -56,9 +56,22 @@ function App() {
     }
   }
 
-  function deleteNote(index) {
+  function setNoteClicked(index) {
     const notesCopy = [...songNotes];
-    notesCopy.splice(index, 1);
+    const previouslyClicked = notesCopy.find((value) => value.clicked); // cancel the previous note being clicked.
+    const previouslyClickedIndex = notesCopy.findIndex(
+      (value) => value.clicked
+    );
+    const note = notesCopy[index];
+
+    if (previouslyClicked && previouslyClickedIndex !== index) {
+      // unclick previous note if it was different then the current one.
+      previouslyClicked.clicked = false;
+    }
+
+    // mark new note clicked, or unmark a current note if it is the same one.
+    note.clicked = !note.clicked;
+
     setSongNotes(notesCopy);
   }
 
@@ -100,6 +113,25 @@ function App() {
     [saveData]
   );
 
+  useEffect(
+    function setDeleteListener() {
+      function deleteNote(event) {
+        if (event.key === "Delete" || event.key === "Backspace") {
+          const notesCopy = [...songNotes];
+          const toDelete = notesCopy.findIndex((note) => note.clicked);
+          notesCopy.splice(toDelete, 1);
+          setSongNotes(notesCopy);
+        }
+      }
+
+      document.addEventListener("keydown", deleteNote);
+      return () => {
+        document.removeEventListener("keydown", deleteNote);
+      };
+    },
+    [noteClicked]
+  );
+
   useEffect(() => {
     if (inExpandedState()) {
       const songNotesCopy = [...songNotes];
@@ -107,8 +139,6 @@ function App() {
       setSongNotes(songNotesCopy);
     }
   }, [expandedNote.note.content]);
-
-  console.log("CS", ContentState());
 
   return (
     <div className="App">
@@ -119,20 +149,27 @@ function App() {
           [
             ...songNotes.map((note, index) => {
               return (
-                <div className="note-header" key={index}>
+                <div
+                  className={`note-header ${
+                    note.clicked ? "note-header--clicked" : ""
+                  }`}
+                  key={index}
+                  onClick={() => setNoteClicked(index)}
+                >
                   <span className="note-header__text">{note.title}</span>
-                  <button
-                    className="note-header__minus-button"
-                    onClick={() => deleteNote(index)}
-                    key={index}
-                  >
-                    <FontAwesomeIcon icon="minus" size="2x"></FontAwesomeIcon>
-                  </button>
+                  {note.clicked && (
+                    <FontAwesomeIcon
+                      icon="trash-alt"
+                      className="minus_icon"
+                      size="2x"
+                    />
+                  )}
                   <button
                     className="note-header__toggle-button"
                     onClick={() => toggleNoteExpansion(index)}
                   >
                     <FontAwesomeIcon
+                      id="filter"
                       icon="caret-down"
                       className="down_icon"
                       size="3x"
@@ -185,7 +222,7 @@ function App() {
                 initialContentState={
                   expandedNote.note.content
                     ? expandedNote.note.content
-                    : rawState.content
+                    : emptyState.content
                 }
               ></Editor>
             </div>
