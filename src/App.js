@@ -8,12 +8,21 @@ import {
   faMinus,
   faPlus,
   faTrashAlt,
+  faPlusCircle,
+  faPlusSquare,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { Editor } from "react-draft-wysiwyg";
 import "../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
-library.add(faCaretDown, faMinus, faPlus, faTrashAlt);
+library.add(
+  faCaretDown,
+  faMinus,
+  faPlus,
+  faTrashAlt,
+  faPlusSquare,
+  faPlusCircle
+);
 
 const emptyState = {
   content: {
@@ -165,7 +174,7 @@ function App() {
                     />
                   )}
                   <button
-                    className="note-header__toggle-button"
+                    className="note-header__toggle-button btn-unstyled"
                     onClick={() => toggleNoteExpansion(index)}
                   >
                     <FontAwesomeIcon
@@ -179,6 +188,7 @@ function App() {
               );
             }),
             <button
+              className="btn-add btn-unstyled"
               onClick={function addSong() {
                 const name = prompt("Song name:");
                 setSongNotes([
@@ -187,8 +197,11 @@ function App() {
                 ]);
               }}
             >
-              <FontAwesomeIcon icon="plus" size="3x"></FontAwesomeIcon>
-              Add
+              <FontAwesomeIcon
+                icon="plus-circle"
+                size="4x"
+                className="plus-icon"
+              ></FontAwesomeIcon>
             </button>,
           ]
         ) : (
