@@ -10,6 +10,9 @@ import {
   faTrashAlt,
   faPlusCircle,
   faPlusSquare,
+  faPencilAlt,
+  faEdit,
+  faPen,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { Editor } from "react-draft-wysiwyg";
@@ -21,7 +24,9 @@ library.add(
   faPlus,
   faTrashAlt,
   faPlusSquare,
-  faPlusCircle
+  faPlusCircle,
+  faPencilAlt,
+  faEdit
 );
 
 const emptyState = {
@@ -84,6 +89,14 @@ function App() {
     setSongNotes(notesCopy);
   }
 
+  function deleteNote(index) {
+    console.log("deleting note: ", index);
+    const notesCopy = [...songNotes];
+    notesCopy.splice(index, 1);
+    console.log("setting song notes: ", notesCopy);
+    setSongNotes(notesCopy);
+  }
+
   const saveData = useCallback(
     function () {
       console.log("Saving data: ", songNotes);
@@ -94,6 +107,16 @@ function App() {
     },
     [songNotes]
   );
+
+  function editTitle(event, currentTitle, index) {
+    event.stopPropagation();
+    const newTitle = prompt("Edit title: ", currentTitle);
+    if (newTitle !== null) {
+      const notesCopy = [...songNotes];
+      notesCopy[index].title = newTitle;
+      setSongNotes(notesCopy);
+    }
+  }
 
   useEffect(function initializeData() {
     fetch("http://127.0.0.1:8000/notes", {
@@ -124,18 +147,16 @@ function App() {
 
   useEffect(
     function setDeleteListener() {
-      function deleteNote(event) {
+      function deleteNoteOnKey(event) {
         if (event.key === "Delete" || event.key === "Backspace") {
-          const notesCopy = [...songNotes];
-          const toDelete = notesCopy.findIndex((note) => note.clicked);
-          notesCopy.splice(toDelete, 1);
-          setSongNotes(notesCopy);
+          const index = songNotes.findIndex((note) => note.clicked);
+          deleteNote(index);
         }
       }
 
-      document.addEventListener("keydown", deleteNote);
+      document.addEventListener("keydown", deleteNoteOnKey);
       return () => {
-        document.removeEventListener("keydown", deleteNote);
+        document.removeEventListener("keydown", deleteNoteOnKey);
       };
     },
     [noteClicked]
@@ -167,14 +188,26 @@ function App() {
                 >
                   <span className="note-header__text">{note.title}</span>
                   {note.clicked && (
-                    <FontAwesomeIcon
-                      icon="trash-alt"
-                      className="minus_icon"
-                      size="2x"
-                    />
+                    <button
+                      className="btn-delete btn-unstyled"
+                      onClick={() => deleteNote(index)}
+                    >
+                      <FontAwesomeIcon
+                        icon="trash-alt"
+                        className="minus_icon"
+                        size="2x"
+                      />
+                    </button>
                   )}
+                  <button className="btn-edit btn-unstyled">
+                    <FontAwesomeIcon
+                      icon="pencil-alt"
+                      size="1.5x"
+                      onClick={(event) => editTitle(event, note.title, index)}
+                    />
+                  </button>
                   <button
-                    className="note-header__toggle-button btn-unstyled"
+                    className="btn-expand btn-unstyled"
                     onClick={() => toggleNoteExpansion(index)}
                   >
                     <FontAwesomeIcon
@@ -210,7 +243,10 @@ function App() {
               <span className="note-header__text">
                 {expandedNote.note.title}
               </span>
-              <button onClick={() => toggleNoteExpansion()}>
+              <button
+                onClick={() => toggleNoteExpansion()}
+                className="btn-expand btn-unstyled mg-left-auto"
+              >
                 <FontAwesomeIcon
                   icon="caret-down"
                   className="down_icon"
@@ -221,6 +257,8 @@ function App() {
             <div className="note-content">
               <Editor
                 toolbarClassName="rich-text__toolbar"
+                contentClassName="rich-text__content"
+                editorClassName="rich-text__editor"
                 onContentStateChange={(contentState) => {
                   const n = {
                     ...expandedNote.note,

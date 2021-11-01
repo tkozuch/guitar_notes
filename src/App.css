@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap");
+
 :root {
   box-sizing: border-box;
 
@@ -23,6 +25,9 @@
 ::after {
   box-sizing: inherit;
 }
+body {
+  font-family: "Roboto Mono", monospace;
+}
 
 .App {
   background-color: var(--whiteish);
@@ -42,6 +47,7 @@
 }
 .header {
   font-size: 3rem;
+  font-family: "Roboto Mono", monospace;
   color: var(--brownish2);
   margin-bottom: 2em;
   font-weight: 700;
@@ -51,6 +57,9 @@
   background-color: inherit;
   border: 0;
   cursor: pointer;
+}
+.mg-left-auto {
+  margin-left: auto;
 }
 
 .note-header {
@@ -66,11 +75,19 @@
   border-bottom: 1px solid var(--whiteish);
   border-radius: 1px;
 }
-.note-header > button {
-  width: 5em;
+.note-header .btn-edit {
+  width: 2.5em;
   height: 3em;
   margin-left: auto;
+  margin-right: 2em;
+  color: var(--redish);
+}
+.note-header .btn-expand {
+  width: 4em;
+  height: 3em;
   text-align: right;
+}
+.note-header:last-child {
 }
 .note-header .down_icon {
   color: var(--whiteish);
@@ -98,6 +115,9 @@
   /* filter: contrast(0) sepia(100%) hue-rotate(116deg) brightness(1.4)
     saturate(0.28); */
 }
+.note-header__text {
+  text-decoration: none;
+}
 
 .btn-add {
   margin-top: 2rem;
@@ -121,7 +141,17 @@
 
 .rdw-editor-wrapper {
   flex-grow: 1;
+  border: 1px var(--yellowish) solid;
 }
 .rdw-editor-main {
   background-color: #fff;
+  height: 100%;
 }
+
+/*not working %*/
+/* .rich-text__editor {
+  height: 100%;
+}
+.public-DraftEditor-content {
+  height: 100%;
+} */
