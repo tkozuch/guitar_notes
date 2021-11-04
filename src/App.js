@@ -153,13 +153,14 @@ function App() {
           deleteNote(index);
         }
       }
-
-      document.addEventListener("keydown", deleteNoteOnKey);
+      if (noteClicked && !inExpandedState) {
+        document.addEventListener("keydown", deleteNoteOnKey);
+      }
       return () => {
         document.removeEventListener("keydown", deleteNoteOnKey);
       };
     },
-    [noteClicked]
+    [noteClicked, inExpandedState]
   );
 
   useEffect(() => {

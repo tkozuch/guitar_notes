@@ -141,11 +141,11 @@ body {
 
 .rdw-editor-wrapper {
   flex-grow: 1;
-  border: 1px var(--yellowish) solid;
 }
 .rdw-editor-main {
   background-color: #fff;
   height: 100%;
+  border: 1px var(--yellowish) solid;
 }
 
 /*not working %*/
