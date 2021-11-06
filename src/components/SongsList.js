@@ -1,3 +1,0 @@
-function SongsList({titles}) {
-    
-}

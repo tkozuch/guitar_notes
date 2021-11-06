@@ -15,8 +15,15 @@ import {
   faPen,
 } from "@fortawesome/free-solid-svg-icons";
 
-import { Editor } from "react-draft-wysiwyg";
 import "../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import { NoteHeader } from "./components/NoteHeader/NoteHeader";
+import { AddButton } from "./components/AddButton";
+import { NoteContent } from "./components/NoteContent";
+import {
+  ExpandButton,
+  DeleteButton,
+  EditButton,
+} from "./components/NoteHeader/buttons";
 
 library.add(
   faCaretDown,
@@ -29,7 +36,7 @@ library.add(
   faEdit
 );
 
-const emptyState = {
+export const emptyState = {
   content: {
     blocks: [
       {
@@ -85,16 +92,23 @@ function App() {
 
     // mark new note clicked, or unmark a current note if it is the same one.
     note.clicked = !note.clicked;
-
+    console.log("setting note clicked. notes: ", notesCopy);
     setSongNotes(notesCopy);
   }
 
-  function deleteNote(index) {
-    console.log("deleting note: ", index);
+  function deleteNote(event, index) {
+    event.stopPropagation();
     const notesCopy = [...songNotes];
     notesCopy.splice(index, 1);
-    console.log("setting song notes: ", notesCopy);
     setSongNotes(notesCopy);
+  }
+
+  function addNote() {
+    const name = prompt("Song name:");
+    setSongNotes([
+      ...songNotes,
+      { title: name, content: undefined, clicked: false },
+    ]);
   }
 
   const saveData = useCallback(
@@ -119,6 +133,7 @@ function App() {
   }
 
   useEffect(function initializeData() {
+    console.log("initialization ");
     fetch("http://127.0.0.1:8000/notes", {
       method: "GET",
     })
@@ -150,10 +165,10 @@ function App() {
       function deleteNoteOnKey(event) {
         if (event.key === "Delete" || event.key === "Backspace") {
           const index = songNotes.findIndex((note) => note.clicked);
-          deleteNote(index);
+          deleteNote(event, index);
         }
       }
-      if (noteClicked && !inExpandedState) {
+      if (noteClicked && inExpandedState) {
         document.addEventListener("keydown", deleteNoteOnKey);
       }
       return () => {
@@ -164,6 +179,7 @@ function App() {
   );
 
   useEffect(() => {
+    console.log("1");
     if (inExpandedState()) {
       const songNotesCopy = [...songNotes];
       songNotesCopy[expandedNote.index].content = expandedNote.note.content;
@@ -180,63 +196,30 @@ function App() {
           [
             ...songNotes.map((note, index) => {
               return (
-                <div
-                  className={`note-header ${
-                    note.clicked ? "note-header--clicked" : ""
-                  }`}
+                <NoteHeader
                   key={index}
-                  onClick={() => setNoteClicked(index)}
+                  isClicked={note.clicked}
+                  title={note.title}
+                  handleClick={() => setNoteClicked(index)}
                 >
-                  <span className="note-header__text">{note.title}</span>
                   {note.clicked && (
-                    <button
-                      className="btn-delete btn-unstyled"
-                      onClick={() => deleteNote(index)}
-                    >
-                      <FontAwesomeIcon
-                        icon="trash-alt"
-                        className="minus_icon"
-                        size="2x"
-                      />
-                    </button>
+                    <DeleteButton
+                      handleClick={(event) => {
+                        console.log("clicking");
+                        deleteNote(event, index);
+                      }}
+                    ></DeleteButton>
                   )}
-                  <button className="btn-edit btn-unstyled">
-                    <FontAwesomeIcon
-                      icon="pencil-alt"
-                      size="1.5x"
-                      onClick={(event) => editTitle(event, note.title, index)}
-                    />
-                  </button>
-                  <button
-                    className="btn-expand btn-unstyled"
-                    onClick={() => toggleNoteExpansion(index)}
-                  >
-                    <FontAwesomeIcon
-                      id="filter"
-                      icon="caret-down"
-                      className="down_icon"
-                      size="3x"
-                    />
-                  </button>
-                </div>
+                  <EditButton
+                    handleClick={(event) => editTitle(event, note.title, index)}
+                  ></EditButton>
+                  <ExpandButton
+                    handleClick={() => toggleNoteExpansion(index)}
+                  ></ExpandButton>
+                </NoteHeader>
               );
             }),
-            <button
-              className="btn-add btn-unstyled"
-              onClick={function addSong() {
-                const name = prompt("Song name:");
-                setSongNotes([
-                  ...songNotes,
-                  { title: name, content: undefined },
-                ]);
-              }}
-            >
-              <FontAwesomeIcon
-                icon="plus-circle"
-                size="4x"
-                className="plus-icon"
-              ></FontAwesomeIcon>
-            </button>,
+            <AddButton handleClick={addNote}></AddButton>,
           ]
         ) : (
           <>
@@ -255,29 +238,7 @@ function App() {
                 />
               </button>
             </div>
-            <div className="note-content">
-              <Editor
-                toolbarClassName="rich-text__toolbar"
-                contentClassName="rich-text__content"
-                editorClassName="rich-text__editor"
-                onContentStateChange={(contentState) => {
-                  const n = {
-                    ...expandedNote.note,
-                    content: contentState,
-                  };
-                  console.log("setting: ", n);
-                  setExpandedNote({
-                    index: expandedNote.index,
-                    note: n,
-                  });
-                }}
-                initialContentState={
-                  expandedNote.note.content
-                    ? expandedNote.note.content
-                    : emptyState.content
-                }
-              ></Editor>
-            </div>
+            {NoteContent(expandedNote, setExpandedNote)}
           </>
         )}
       </div>
