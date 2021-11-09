@@ -1,7 +1,6 @@
 import "./App.css";
 
 import { React, useState, useEffect, useCallback } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
   faCaretDown,
@@ -12,7 +11,6 @@ import {
   faPlusSquare,
   faPencilAlt,
   faEdit,
-  faPen,
 } from "@fortawesome/free-solid-svg-icons";
 
 import "../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
@@ -36,35 +34,110 @@ library.add(
   faEdit
 );
 
-export const emptyState = {
-  content: {
-    blocks: [
-      {
-        key: "5u4m2",
-        text: " ",
-        type: "unstyled",
-        depth: 0,
-        inlineStyleRanges: [],
-        entityRanges: [],
-        data: {},
-      },
-    ],
-    entityMap: {},
-  },
-};
+function useSongNotes() {
+  const [songNotes, setSongNotes] = useState([]);
+
+  const setSongNote = (index, properties) => {
+    const noteToChange = songNotes[index];
+    if (noteToChange) {
+      const songNotesCopy = [...songNotes];
+      songNotesCopy[index] = { ...songNotesCopy, ...properties };
+
+      setSongNotes(songNotesCopy);
+    }
+  };
+
+  return [songNotes, setSongNote];
+}
 
 function App() {
-  const [expandedNote, setExpandedNote] = useState({
-    index: -1,
-    note: {
-      title: undefined,
-      content: undefined,
-    },
-  });
-  const [songNotes, setSongNotes] = useState([]);
-  const noteClicked = songNotes.filter((note) => note.clicked);
+  const [songNotes, setSongNote] = useSongNotes();
 
-  const inExpandedState = () => expandedNote.index !== -1;
+  const noteClicked = useCallback(
+    () => songNotes.filter((note) => note.clicked),
+    [songNotes]
+  );
+  const expandedNote = useCallback(() => {
+    const expanded = songNotes.find((note) => note.expanded);
+    const index = songNotes.findIndex((note) => note.expanded);
+
+    return expanded
+      ? { index, note: expanded }
+      : {
+          index: -1,
+          note: {
+            title: undefined,
+            content: undefined,
+            clicked: false,
+            expanded: false,
+          },
+        };
+  }, [songNotes]);
+  const inExpandedState = useCallback(
+    () => expandedNote().index !== -1,
+    [expandedNote]
+  );
+
+  useEffect(function initializeData() {
+    console.log("initialization ");
+    fetch("http://127.0.0.1:8000/notes", {
+      method: "GET",
+    })
+      .then((response) => response.json())
+      .then((notesData) => {
+        // Set default initial values.
+        const dataRefilled = notesData.map((note) => ({
+          ...note,
+          clicked: false,
+          expanded: false,
+        }));
+
+        console.log("Data initialized: ", dataRefilled);
+        setSongNotes(notesData);
+      });
+  }, []);
+
+  useEffect(
+    function setEventListeners() {
+      let checkEventPressed = function (event) {
+        if (event.ctrlKey && event.key === "s") {
+          event.preventDefault();
+          saveData();
+        }
+      };
+      document.addEventListener("keydown", checkEventPressed);
+      return () => {
+        document.removeEventListener("keydown", checkEventPressed);
+      };
+    },
+    [saveData]
+  );
+
+  useEffect(
+    function setDeleteListener() {
+      function deleteNoteOnKey(event) {
+        if (event.key === "Delete" || event.key === "Backspace") {
+          const index = songNotes.findIndex((note) => note.clicked);
+          deleteNote(event, index);
+        }
+      }
+      if (noteClicked && inExpandedState) {
+        document.addEventListener("keydown", deleteNoteOnKey);
+      }
+      return () => {
+        document.removeEventListener("keydown", deleteNoteOnKey);
+      };
+    },
+    [noteClicked, inExpandedState]
+  );
+
+  useEffect(() => {
+    if (inExpandedState()) {
+      const songNotesCopy = [...songNotes];
+      songNotesCopy[expandedNote.index].content = expandedNote.note.content;
+      setSongNotes(songNotesCopy);
+    }
+  }, [expandedNote.note.content]);
 
   function toggleNoteExpansion(index) {
     if (inExpandedState()) {
@@ -132,61 +205,6 @@ function App() {
     }
   }
 
-  useEffect(function initializeData() {
-    console.log("initialization ");
-    fetch("http://127.0.0.1:8000/notes", {
-      method: "GET",
-    })
-      .then((response) => response.json())
-      .then((notesData) => {
-        console.log("Data initialized: ", notesData);
-        setSongNotes(notesData);
-      });
-  }, []);
-
-  useEffect(
-    function setEventListeners() {
-      let checkEventPressed = function (event) {
-        if (event.ctrlKey && event.key === "s") {
-          event.preventDefault();
-          saveData();
-        }
-      };
-      document.addEventListener("keydown", checkEventPressed);
-      return () => {
-        document.removeEventListener("keydown", checkEventPressed);
-      };
-    },
-    [saveData]
-  );
-
-  useEffect(
-    function setDeleteListener() {
-      function deleteNoteOnKey(event) {
-        if (event.key === "Delete" || event.key === "Backspace") {
-          const index = songNotes.findIndex((note) => note.clicked);
-          deleteNote(event, index);
-        }
-      }
-      if (noteClicked && inExpandedState) {
-        document.addEventListener("keydown", deleteNoteOnKey);
-      }
-      return () => {
-        document.removeEventListener("keydown", deleteNoteOnKey);
-      };
-    },
-    [noteClicked, inExpandedState]
-  );
-
-  useEffect(() => {
-    console.log("1");
-    if (inExpandedState()) {
-      const songNotesCopy = [...songNotes];
-      songNotesCopy[expandedNote.index].content = expandedNote.note.content;
-      setSongNotes(songNotesCopy);
-    }
-  }, [expandedNote.note.content]);
-
   return (
     <div className="App">
       <div className="container">
@@ -204,17 +222,14 @@ function App() {
                 >
                   {note.clicked && (
                     <DeleteButton
-                      handleClick={(event) => {
-                        console.log("clicking");
-                        deleteNote(event, index);
-                      }}
+                      handleClick={(event) => deleteNote(event, index)}
                     ></DeleteButton>
                   )}
                   <EditButton
                     handleClick={(event) => editTitle(event, note.title, index)}
                   ></EditButton>
                   <ExpandButton
-                    handleClick={() => toggleNoteExpansion(index)}
+                    handleClick={() => setSongNote(index, { expanded: true })}
                   ></ExpandButton>
                 </NoteHeader>
               );
@@ -223,22 +238,25 @@ function App() {
           ]
         ) : (
           <>
-            <div className="note-header">
-              <span className="note-header__text">
-                {expandedNote.note.title}
-              </span>
-              <button
-                onClick={() => toggleNoteExpansion()}
-                className="btn-expand btn-unstyled mg-left-auto"
-              >
-                <FontAwesomeIcon
-                  icon="caret-down"
-                  className="down_icon"
-                  size="3x"
-                />
-              </button>
-            </div>
-            {NoteContent(expandedNote, setExpandedNote)}
+            <NoteHeader
+              isClicked={false}
+              title={expandedNote.note.title}
+              handleClick={() => setNoteClicked(expandedNote.index)}
+            >
+              {/* without Delete button here */}
+              <EditButton
+                handleClick={(event) =>
+                  editTitle(event, expandedNote.note.title, expandedNote.index)
+                }
+              ></EditButton>
+              <ExpandButton
+                handleClick={() => setSongNote(expandedNote().index, {})}
+              ></ExpandButton>
+            </NoteHeader>
+            <NoteContent
+              note={expandedNote.note}
+              setExpandedNote={setExpandedNote}
+            ></NoteContent>
           </>
         )}
       </div>
