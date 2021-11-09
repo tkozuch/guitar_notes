@@ -18,7 +18,7 @@ const emptyState = {
   },
 };
 
-export function NoteContent(note, setExpandedNote) {
+export function NoteContent(note, onStateChange) {
   return (
     <div className="note-content">
       <Editor
@@ -26,20 +26,10 @@ export function NoteContent(note, setExpandedNote) {
         contentClassName="rich-text__content"
         editorClassName="rich-text__editor"
         onContentStateChange={(contentState) => {
-          const note = {
-            ...note,
-            content: contentState,
-          };
-          console.log("setting: ", note);
-          setExpandedNote({
-            index: note.index,
-            note,
-          });
+          onStateChange(contentState);
         }}
         initialContentState={
-          note.note.content
-            ? note.note.content
-            : emptyState.content
+          note.note.content ? note.note.content : emptyState.content
         }
       ></Editor>
     </div>

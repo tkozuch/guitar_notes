@@ -34,25 +34,22 @@ library.add(
   faEdit
 );
 
-function useSongNotes() {
-  const [songNotes, setSongNotes] = useState([]);
-
-  const setSongNote = (index, properties) => {
-    const noteToChange = songNotes[index];
-    if (noteToChange) {
-      const songNotesCopy = [...songNotes];
-      songNotesCopy[index] = { ...songNotesCopy, ...properties };
-
-      setSongNotes(songNotesCopy);
-    }
-  };
-
-  return [songNotes, setSongNote];
-}
 
 function App() {
-  const [songNotes, setSongNote] = useSongNotes();
+  const [songNotes, setSongNotes] = useState([]);
+  const setSongNote = useCallback(
+    (index, properties) => {
+      console.log("setting note: ", index, properties);
+      const noteToChange = songNotes[index];
+      if (noteToChange) {
+        const songNotesCopy = [...songNotes];
+        songNotesCopy[index] = { ...songNotesCopy, ...properties };
 
+        setSongNotes(songNotesCopy);
+      }
+    },
+    [songNotes]
+  );
   const noteClicked = useCallback(
     () => songNotes.filter((note) => note.clicked),
     [songNotes]
@@ -77,6 +74,60 @@ function App() {
     () => expandedNote().index !== -1,
     [expandedNote]
   );
+
+  // TODO: Refactor this to use singleNoteSetting.
+  function setNoteClicked(index) {
+    const notesCopy = [...songNotes];
+    const previouslyClicked = notesCopy.find((value) => value.clicked); // cancel the previous note being clicked.
+    const previouslyClickedIndex = notesCopy.findIndex(
+      (value) => value.clicked
+    );
+    const note = notesCopy[index];
+
+    if (previouslyClicked && previouslyClickedIndex !== index) {
+      // unclick previous note if it was different then the current one.
+      previouslyClicked.clicked = false;
+    }
+
+    // mark new note clicked, or unmark a current note if it is the same one.
+    note.clicked = !note.clicked;
+    console.log("setting note clicked. notes: ", notesCopy);
+    setSongNotes(notesCopy);
+  }
+
+  function deleteNote(event, index) {
+    event.stopPropagation();
+    const notesCopy = [...songNotes];
+    notesCopy.splice(index, 1);
+    setSongNotes(notesCopy);
+  }
+
+  function addNote() {
+    const name = prompt("Song name:");
+    setSongNotes([
+      ...songNotes,
+      { title: name, content: undefined, clicked: false },
+    ]);
+  }
+
+  const saveData = useCallback(
+    function () {
+      console.log("Saving data: ", songNotes);
+      fetch("http://127.0.0.1:8000/notes", {
+        method: "POST",
+        body: JSON.stringify(songNotes),
+      });
+    },
+    [songNotes]
+  );
+
+  function editTitle(event, currentTitle, index) {
+    event.stopPropagation();
+    const newTitle = prompt("Edit title: ", currentTitle);
+    if (newTitle !== null) {
+      setSongNote(index, { title: newTitle });
+    }
+  }
 
   useEffect(function initializeData() {
     console.log("initialization ");
@@ -131,80 +182,6 @@ function App() {
     [noteClicked, inExpandedState]
   );
 
-  useEffect(() => {
-    if (inExpandedState()) {
-      const songNotesCopy = [...songNotes];
-      songNotesCopy[expandedNote.index].content = expandedNote.note.content;
-      setSongNotes(songNotesCopy);
-    }
-  }, [expandedNote.note.content]);
-
-  function toggleNoteExpansion(index) {
-    if (inExpandedState()) {
-      setExpandedNote({
-        index: -1,
-        note: { title: undefined, content: undefined },
-      });
-    } else {
-      setExpandedNote({ index, note: songNotes[index] });
-    }
-  }
-
-  function setNoteClicked(index) {
-    const notesCopy = [...songNotes];
-    const previouslyClicked = notesCopy.find((value) => value.clicked); // cancel the previous note being clicked.
-    const previouslyClickedIndex = notesCopy.findIndex(
-      (value) => value.clicked
-    );
-    const note = notesCopy[index];
-
-    if (previouslyClicked && previouslyClickedIndex !== index) {
-      // unclick previous note if it was different then the current one.
-      previouslyClicked.clicked = false;
-    }
-
-    // mark new note clicked, or unmark a current note if it is the same one.
-    note.clicked = !note.clicked;
-    console.log("setting note clicked. notes: ", notesCopy);
-    setSongNotes(notesCopy);
-  }
-
-  function deleteNote(event, index) {
-    event.stopPropagation();
-    const notesCopy = [...songNotes];
-    notesCopy.splice(index, 1);
-    setSongNotes(notesCopy);
-  }
-
-  function addNote() {
-    const name = prompt("Song name:");
-    setSongNotes([
-      ...songNotes,
-      { title: name, content: undefined, clicked: false },
-    ]);
-  }
-
-  const saveData = useCallback(
-    function () {
-      console.log("Saving data: ", songNotes);
-      fetch("http://127.0.0.1:8000/notes", {
-        method: "POST",
-        body: JSON.stringify(songNotes),
-      });
-    },
-    [songNotes]
-  );
-
-  function editTitle(event, currentTitle, index) {
-    event.stopPropagation();
-    const newTitle = prompt("Edit title: ", currentTitle);
-    if (newTitle !== null) {
-      const notesCopy = [...songNotes];
-      notesCopy[index].title = newTitle;
-      setSongNotes(notesCopy);
-    }
-  }
-
   return (
     <div className="App">
       <div className="container">
@@ -240,22 +217,30 @@ function App() {
           <>
             <NoteHeader
               isClicked={false}
-              title={expandedNote.note.title}
-              handleClick={() => setNoteClicked(expandedNote.index)}
+              title={expandedNote().note.title}
+              handleClick={() => setNoteClicked(expandedNote().index)}
             >
               {/* without Delete button here */}
               <EditButton
                 handleClick={(event) =>
-                  editTitle(event, expandedNote.note.title, expandedNote.index)
+                  editTitle(
+                    event,
+                    expandedNote().note.title,
+                    expandedNote().index
+                  )
                 }
               ></EditButton>
               <ExpandButton
-                handleClick={() => setSongNote(expandedNote().index, {})}
+                handleClick={() =>
+                  setSongNote(expandedNote().index, { expanded: false })
+                }
               ></ExpandButton>
             </NoteHeader>
             <NoteContent
-              note={expandedNote.note}
-              setExpandedNote={setExpandedNote}
+              note={expandedNote().note}
+              onStateChange={(content) =>
+                setSongNote(expandedNote().index, { content })
+              }
             ></NoteContent>
           </>
         )}
