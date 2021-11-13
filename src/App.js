@@ -34,18 +34,21 @@ library.add(
   faEdit
 );
 
-
 function App() {
   const [songNotes, setSongNotes] = useState([]);
   const setSongNote = useCallback(
     (index, properties) => {
       console.log("setting note: ", index, properties);
       const noteToChange = songNotes[index];
+      console.log("to change", noteToChange);
       if (noteToChange) {
         const songNotesCopy = [...songNotes];
-        songNotesCopy[index] = { ...songNotesCopy, ...properties };
+        console.log("songNotesCopy note, ", songNotesCopy[index]);
+        songNotesCopy[index] = { ...songNotesCopy[index], ...properties };
+        console.log("after note, notes", songNotesCopy[index], songNotesCopy);
 
         setSongNotes(songNotesCopy);
+        console.log("song Notes afer setting: ", songNotes);
       }
     },
     [songNotes]
@@ -55,6 +58,7 @@ function App() {
     [songNotes]
   );
   const expandedNote = useCallback(() => {
+    console.log("in expandedNote callback. notes: ", songNotes);
     const expanded = songNotes.find((note) => note.expanded);
     const index = songNotes.findIndex((note) => note.expanded);
 
@@ -65,15 +69,16 @@ function App() {
           note: {
             title: undefined,
             content: undefined,
+            // note doesn't exist so it's imposibble it is clicked/expanded
             clicked: false,
             expanded: false,
           },
         };
   }, [songNotes]);
-  const inExpandedState = useCallback(
-    () => expandedNote().index !== -1,
-    [expandedNote]
-  );
+  const inExpandedState = useCallback(() => {
+    console.log("in expandedState callback, notes: ", songNotes);
+    return expandedNote().index !== -1;
+  }, [expandedNote]);
 
   // TODO: Refactor this to use singleNoteSetting.
   function setNoteClicked(index) {
@@ -172,7 +177,7 @@ function App() {
           deleteNote(event, index);
         }
       }
-      if (noteClicked && inExpandedState) {
+      if (noteClicked && !inExpandedState()) {
         document.addEventListener("keydown", deleteNoteOnKey);
       }
       return () => {
@@ -181,6 +186,15 @@ function App() {
     },
     [noteClicked, inExpandedState]
   );
+
+  function toggleNote(operation, index, event) {
+    event.stopPropagation();
+    if (operation === "expand") {
+      setSongNote(index, { expanded: true });
+    } else if (operation === "collapse") {
+      setSongNote(index, { expanded: false });
+    }
+  }
 
   return (
     <div className="App">
@@ -206,7 +220,7 @@ function App() {
                     handleClick={(event) => editTitle(event, note.title, index)}
                   ></EditButton>
                   <ExpandButton
-                    handleClick={() => setSongNote(index, { expanded: true })}
+                    handleClick={(event) => toggleNote("expand", index, event)}
                   ></ExpandButton>
                 </NoteHeader>
               );
@@ -231,8 +245,8 @@ function App() {
                 }
               ></EditButton>
               <ExpandButton
-                handleClick={() =>
-                  setSongNote(expandedNote().index, { expanded: false })
+                handleClick={(event) =>
+                  toggleNote("collapse", expandedNote().index, event)
                 }
               ></ExpandButton>
             </NoteHeader>

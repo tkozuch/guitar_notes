@@ -18,7 +18,7 @@ const emptyState = {
   },
 };
 
-export function NoteContent(note, onStateChange) {
+export function NoteContent({ note, onStateChange }) {
   return (
     <div className="note-content">
       <Editor
@@ -28,9 +28,7 @@ export function NoteContent(note, onStateChange) {
         onContentStateChange={(contentState) => {
           onStateChange(contentState);
         }}
-        initialContentState={
-          note.note.content ? note.note.content : emptyState.content
-        }
+        initialContentState={note.content ?? emptyState.content}
       ></Editor>
     </div>
   );
