@@ -67,11 +67,13 @@
                 }
             ],
             "entityMap": {}
-        }
+        },
+        "clicked": false,
+        "pleaseExpand": true
     },
     {
         "title": "in the aeroplane over the sea",
-        "clicked": true,
+        "clicked": false,
         "content": {
             "blocks": [
                 {
@@ -106,9 +108,132 @@
                 }
             ],
             "entityMap": {}
-        }
+        },
+        "pleaseExpand": true
     },
     {
-        "title": "1979 - Smashing pumpkins"
+        "title": "1979 - Smashing pumpkins",
+        "expanded": false,
+        "content": {
+            "blocks": [
+                {
+                    "key": "5u4m2",
+                    "text": " Let's write something here :) ",
+                    "type": "unstyled",
+                    "depth": 0,
+                    "inlineStyleRanges": [
+                        {
+                            "offset": 0,
+                            "length": 31,
+                            "style": "fontsize-30"
+                        }
+                    ],
+                    "entityRanges": [],
+                    "data": {
+                        "text-align": "center"
+                    }
+                },
+                {
+                    "key": "c52fl",
+                    "text": "This will be the note, a bit of a test note to be honest... but should be working.",
+                    "type": "unstyled",
+                    "depth": 0,
+                    "inlineStyleRanges": [
+                        {
+                            "offset": 0,
+                            "length": 82,
+                            "style": "fontsize-14"
+                        }
+                    ],
+                    "entityRanges": [],
+                    "data": {}
+                },
+                {
+                    "key": "27d5a",
+                    "text": "",
+                    "type": "unstyled",
+                    "depth": 0,
+                    "inlineStyleRanges": [],
+                    "entityRanges": [],
+                    "data": {}
+                },
+                {
+                    "key": "3vmbh",
+                    "text": "",
+                    "type": "unstyled",
+                    "depth": 0,
+                    "inlineStyleRanges": [],
+                    "entityRanges": [],
+                    "data": {}
+                }
+            ],
+            "entityMap": {}
+        },
+        "clicked": false,
+        "pleaseExpand": true
+    },
+    {
+        "title": "asdf",
+        "content": {
+            "blocks": [
+                {
+                    "key": "5u4m2",
+                    "text": " asdfasdfasdfasdfadsf",
+                    "type": "unstyled",
+                    "depth": 0,
+                    "inlineStyleRanges": [],
+                    "entityRanges": [],
+                    "data": {}
+                },
+                {
+                    "key": "8tfv3",
+                    "text": "asdfasdf ",
+                    "type": "unstyled",
+                    "depth": 0,
+                    "inlineStyleRanges": [],
+                    "entityRanges": [],
+                    "data": {}
+                },
+                {
+                    "key": "7a3jb",
+                    "text": "",
+                    "type": "unstyled",
+                    "depth": 0,
+                    "inlineStyleRanges": [],
+                    "entityRanges": [],
+                    "data": {}
+                },
+                {
+                    "key": "foaes",
+                    "text": "",
+                    "type": "unstyled",
+                    "depth": 0,
+                    "inlineStyleRanges": [],
+                    "entityRanges": [],
+                    "data": {}
+                },
+                {
+                    "key": "banuo",
+                    "text": "",
+                    "type": "unstyled",
+                    "depth": 0,
+                    "inlineStyleRanges": [],
+                    "entityRanges": [],
+                    "data": {}
+                },
+                {
+                    "key": "9ogj1",
+                    "text": "sdfgsdfgsdf",
+                    "type": "unstyled",
+                    "depth": 0,
+                    "inlineStyleRanges": [],
+                    "entityRanges": [],
+                    "data": {}
+                }
+            ],
+            "entityMap": {}
+        },
+        "clicked": false,
+        "pleaseExpand": true
     }
 ]
