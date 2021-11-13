@@ -19,6 +19,7 @@ const emptyState = {
 };
 
 export function NoteContent({ note, onStateChange }) {
+  console.log(note);
   return (
     <div className="note-content">
       <Editor

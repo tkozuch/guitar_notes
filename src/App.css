@@ -36,7 +36,7 @@ body {
   min-height: 100vh;
   max-width: 1300px;
   margin: auto;
-  padding: 5% 10%;
+  padding: 2.5em 9%;
 
   display: flex;
   flex-direction: column;
@@ -47,10 +47,16 @@ body {
 }
 .header {
   font-size: 3rem;
+  position: sticky;
   font-family: "Roboto Mono", monospace;
   color: var(--brownish2);
+  background-color: (--whiteish);
   margin-bottom: 2em;
   font-weight: 700;
+}
+.notes-list {
+  width: 100%;
+  max-height: 60vh;
 }
 
 .btn-unstyled {
@@ -79,15 +85,13 @@ body {
   width: 2.5em;
   height: 3em;
   margin-left: auto;
-  margin-right: 2em;
+  margin-right: 1em;
   color: var(--redish);
 }
 .note-header .btn-expand {
-  width: 4em;
+  width: 3em;
   height: 3em;
   text-align: right;
-}
-.note-header:last-child {
 }
 .note-header .down_icon {
   color: var(--whiteish);
@@ -103,9 +107,7 @@ body {
   color: var(--redish);
 }
 .note-content {
-  min-height: 10vh;
   min-width: 100%;
-  flex-grow: 1;
   display: flex;
   flex-direction: column;
 }
@@ -138,20 +140,9 @@ body {
 .rdw-editor-wrapper:focus-within .rich-text__toolbar {
   display: flex;
 }
-
-.rdw-editor-wrapper {
-  flex-grow: 1;
-}
 .rdw-editor-main {
   background-color: #fff;
   height: 100%;
+  min-height: 10vh;
   border: 1px var(--yellowish) solid;
 }
-
-/*not working %*/
-/* .rich-text__editor {
-  height: 100%;
-}
-.public-DraftEditor-content {
-  height: 100%;
-} */

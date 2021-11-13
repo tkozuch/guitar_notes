@@ -40,15 +40,11 @@ function App() {
     (index, properties) => {
       console.log("setting note: ", index, properties);
       const noteToChange = songNotes[index];
-      console.log("to change", noteToChange);
       if (noteToChange) {
         const songNotesCopy = [...songNotes];
-        console.log("songNotesCopy note, ", songNotesCopy[index]);
         songNotesCopy[index] = { ...songNotesCopy[index], ...properties };
-        console.log("after note, notes", songNotesCopy[index], songNotesCopy);
 
         setSongNotes(songNotesCopy);
-        console.log("song Notes afer setting: ", songNotes);
       }
     },
     [songNotes]
@@ -58,7 +54,6 @@ function App() {
     [songNotes]
   );
   const expandedNote = useCallback(() => {
-    console.log("in expandedNote callback. notes: ", songNotes);
     const expanded = songNotes.find((note) => note.expanded);
     const index = songNotes.findIndex((note) => note.expanded);
 
@@ -76,7 +71,6 @@ function App() {
         };
   }, [songNotes]);
   const inExpandedState = useCallback(() => {
-    console.log("in expandedState callback, notes: ", songNotes);
     return expandedNote().index !== -1;
   }, [expandedNote]);
 
@@ -136,7 +130,7 @@ function App() {
 
   useEffect(function initializeData() {
     console.log("initialization ");
-    fetch("http://127.0.0.1:8000/notes", {
+    fetch("http://localhost:8000/notes", {
       method: "GET",
     })
       .then((response) => response.json())
@@ -150,6 +144,10 @@ function App() {
 
         console.log("Data initialized: ", dataRefilled);
         setSongNotes(notesData);
+      })
+      .catch((error) => {
+        console.log("error when fetching: ", error);
+        throw error;
       });
   }, []);
 
@@ -187,42 +185,89 @@ function App() {
     [noteClicked, inExpandedState]
   );
 
-  function toggleNote(operation, index, event) {
+  function toggleNote(index, event) {
     event.stopPropagation();
-    if (operation === "expand") {
-      setSongNote(index, { expanded: true });
-    } else if (operation === "collapse") {
-      setSongNote(index, { expanded: false });
-    }
+    const currentState = songNotes[index].pleaseExpand;
+    setSongNote(index, { pleaseExpand: !currentState });
   }
 
   return (
     <div className="App">
       <div className="container">
         <div className="header">Co grać na gitarze</div>
-
-        {!inExpandedState() ? (
+        <main className="notes-list">
+          {[
+            ...songNotes.map((note, index) => {
+              return (
+                <>
+                  <NoteHeader
+                    key={index}
+                    isClicked={note.clicked}
+                    title={note.title}
+                    handleClick={() => setNoteClicked(index)}
+                  >
+                    {note.clicked && (
+                      <DeleteButton
+                        handleClick={(event) => deleteNote(event, index)}
+                      ></DeleteButton>
+                    )}
+                    <EditButton
+                      handleClick={(event) =>
+                        editTitle(event, note.title, index)
+                      }
+                    ></EditButton>
+                    <ExpandButton
+                      handleClick={(event) => toggleNote(index, event)}
+                    ></ExpandButton>
+                  </NoteHeader>
+                  {note.pleaseExpand && (
+                    <NoteContent
+                      note={note}
+                      onStateChange={(content) =>
+                        setSongNote(index, { content })
+                      }
+                    ></NoteContent>
+                  )}
+                </>
+              );
+            }),
+          ]}
+        </main>
+        <AddButton handleClick={addNote}></AddButton>
+        {/* {!inExpandedState() ? (
           [
             ...songNotes.map((note, index) => {
               return (
-                <NoteHeader
-                  key={index}
-                  isClicked={note.clicked}
-                  title={note.title}
-                  handleClick={() => setNoteClicked(index)}
-                >
-                  {note.clicked && (
-                    <DeleteButton
-                      handleClick={(event) => deleteNote(event, index)}
-                    ></DeleteButton>
+                <>
+                  <NoteHeader
+                    key={index}
+                    isClicked={note.clicked}
+                    title={note.title}
+                    handleClick={() => setNoteClicked(index)}
+                  >
+                    {note.clicked && (
+                      <DeleteButton
+                        handleClick={(event) => deleteNote(event, index)}
+                      ></DeleteButton>
+                    )}
+                    <EditButton
+                      handleClick={(event) =>
+                        editTitle(event, note.title, index)
+                      }
+                    ></EditButton>
+                    <ExpandButton
+                      handleClick={(event) => toggleNote(index, event)}
+                    ></ExpandButton>
+                  </NoteHeader>
+                  {note.pleaseExpand && (
+                    <NoteContent
+                      note={note}
+                      onStateChange={(content) =>
+                        setSongNote(index, { content })
+                      }
+                    ></NoteContent>
                   )}
-                  <EditButton
-                    handleClick={(event) => editTitle(event, note.title, index)}
-                  ></EditButton>
-                  <ExpandButton
-                    handleClick={(event) => toggleNote("expand", index, event)}
-                  ></ExpandButton>
-                </NoteHeader>
+                </>
               );
             }),
             <AddButton handleClick={addNote}></AddButton>,
@@ -235,7 +280,7 @@ function App() {
               handleClick={() => setNoteClicked(expandedNote().index)}
             >
               {/* without Delete button here */}
-              <EditButton
+        {/* <EditButton
                 handleClick={(event) =>
                   editTitle(
                     event,
@@ -245,9 +290,7 @@ function App() {
                 }
               ></EditButton>
               <ExpandButton
-                handleClick={(event) =>
-                  toggleNote("collapse", expandedNote().index, event)
-                }
+                handleClick={(event) => toggleNote(expandedNote().index, event)}
               ></ExpandButton>
             </NoteHeader>
             <NoteContent
@@ -255,9 +298,9 @@ function App() {
               onStateChange={(content) =>
                 setSongNote(expandedNote().index, { content })
               }
-            ></NoteContent>
-          </>
-        )}
+            ></NoteContent> */}
+        {/* </>
+        )}  */}
       </div>
     </div>
   );
