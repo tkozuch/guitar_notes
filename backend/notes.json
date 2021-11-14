@@ -69,7 +69,7 @@
             "entityMap": {}
         },
         "clicked": false,
-        "pleaseExpand": true
+        "pleaseExpand": false
     },
     {
         "title": "in the aeroplane over the sea",
@@ -109,7 +109,7 @@
             ],
             "entityMap": {}
         },
-        "pleaseExpand": true
+        "pleaseExpand": false
     },
     {
         "title": "1979 - Smashing pumpkins",
@@ -170,7 +170,7 @@
             "entityMap": {}
         },
         "clicked": false,
-        "pleaseExpand": true
+        "pleaseExpand": false
     },
     {
         "title": "asdf",
@@ -234,6 +234,239 @@
             "entityMap": {}
         },
         "clicked": false,
+        "pleaseExpand": false
+    },
+    {
+        "title": "You let my Tyres down",
+        "content": {
+            "blocks": [
+                {
+                    "key": "5u4m2",
+                    "text": " ",
+                    "type": "unstyled",
+                    "depth": 0,
+                    "inlineStyleRanges": [],
+                    "entityRanges": [],
+                    "data": {}
+                },
+                {
+                    "key": "ei7di",
+                    "text": " ",
+                    "type": "atomic",
+                    "depth": 0,
+                    "inlineStyleRanges": [],
+                    "entityRanges": [
+                        {
+                            "offset": 0,
+                            "length": 1,
+                            "key": 0
+                        }
+                    ],
+                    "data": {}
+                },
+                {
+                    "key": "cljk2",
+                    "text": "",
+                    "type": "unstyled",
+                    "depth": 0,
+                    "inlineStyleRanges": [],
+                    "entityRanges": [],
+                    "data": {}
+                },
+                {
+                    "key": "5q43c",
+                    "text": " ",
+                    "type": "atomic",
+                    "depth": 0,
+                    "inlineStyleRanges": [],
+                    "entityRanges": [
+                        {
+                            "offset": 0,
+                            "length": 1,
+                            "key": 1
+                        }
+                    ],
+                    "data": {}
+                },
+                {
+                    "key": "erkr4",
+                    "text": " ",
+                    "type": "unstyled",
+                    "depth": 0,
+                    "inlineStyleRanges": [],
+                    "entityRanges": [
+                        {
+                            "offset": 0,
+                            "length": 1,
+                            "key": 2
+                        }
+                    ],
+                    "data": {}
+                },
+                {
+                    "key": "1j312",
+                    "text": "najfajniejszy tab chyba\n",
+                    "type": "unstyled",
+                    "depth": 0,
+                    "inlineStyleRanges": [],
+                    "entityRanges": [
+                        {
+                            "offset": 0,
+                            "length": 23,
+                            "key": 3
+                        }
+                    ],
+                    "data": {}
+                },
+                {
+                    "key": "cb1tm",
+                    "text": "",
+                    "type": "unstyled",
+                    "depth": 0,
+                    "inlineStyleRanges": [],
+                    "entityRanges": [],
+                    "data": {}
+                },
+                {
+                    "key": "9i8jm",
+                    "text": " ",
+                    "type": "atomic",
+                    "depth": 0,
+                    "inlineStyleRanges": [],
+                    "entityRanges": [
+                        {
+                            "offset": 0,
+                            "length": 1,
+                            "key": 4
+                        }
+                    ],
+                    "data": {}
+                },
+                {
+                    "key": "7h7fg",
+                    "text": "",
+                    "type": "unstyled",
+                    "depth": 0,
+                    "inlineStyleRanges": [],
+                    "entityRanges": [],
+                    "data": {}
+                },
+                {
+                    "key": "cl8sr",
+                    "text": " ",
+                    "type": "atomic",
+                    "depth": 0,
+                    "inlineStyleRanges": [],
+                    "entityRanges": [
+                        {
+                            "offset": 0,
+                            "length": 1,
+                            "key": 5
+                        }
+                    ],
+                    "data": {}
+                },
+                {
+                    "key": "fu72s",
+                    "text": "",
+                    "type": "unstyled",
+                    "depth": 0,
+                    "inlineStyleRanges": [],
+                    "entityRanges": [],
+                    "data": {}
+                }
+            ],
+            "entityMap": {
+                "0": {
+                    "type": "EMBEDDED_LINK",
+                    "mutability": "MUTABLE",
+                    "data": {
+                        "src": "https://www.youtube.com/embed/iQYK3sLxeCo",
+                        "height": "auto",
+                        "width": "auto"
+                    }
+                },
+                "1": {
+                    "type": "EMBEDDED_LINK",
+                    "mutability": "MUTABLE",
+                    "data": {
+                        "src": "https://www.youtube.com/embed/u4W1TaE5xQc",
+                        "height": "auto",
+                        "width": "auto"
+                    }
+                },
+                "2": {
+                    "type": "EMBEDDED_LINK",
+                    "mutability": "MUTABLE",
+                    "data": {
+                        "src": "https://www.youtube.com/embed/iQYK3sLxeCo",
+                        "height": "auto",
+                        "width": "auto"
+                    }
+                },
+                "3": {
+                    "type": "LINK",
+                    "mutability": "MUTABLE",
+                    "data": {
+                        "url": "https://tabs.ultimate-guitar.com/tab/tropical-fuck-storm/you-let-my-tyres-down-tabs-2588397",
+                        "targetOption": "_blank"
+                    }
+                },
+                "4": {
+                    "type": "IMAGE",
+                    "mutability": "MUTABLE",
+                    "data": {
+                        "src": "https://www.guitartabsexplorer.com/images/chords/all-versions/gmaj7-3_2_0_0_0_2.png",
+                        "height": "auto",
+                        "width": "auto"
+                    }
+                },
+                "5": {
+                    "type": "IMAGE",
+                    "mutability": "MUTABLE",
+                    "data": {
+                        "src": "https://www.scales-chords.com/chord-charts/guitar-Gmaj7b5-g-n-l-v-3-2-x-0-2-2.png",
+                        "height": "auto",
+                        "width": "auto"
+                    }
+                }
+            }
+        },
+        "clicked": true,
         "pleaseExpand": true
+    },
+    {
+        "title": "Inne materialy",
+        "content": {
+            "blocks": [
+                {
+                    "key": "5u4m2",
+                    "text": " https://en.wikipedia.org/wiki/Dominant_seventh_flat_five_chord - jak tworzyc akordy np.: Gmaj7b7",
+                    "type": "unstyled",
+                    "depth": 0,
+                    "inlineStyleRanges": [],
+                    "entityRanges": [
+                        {
+                            "offset": 1,
+                            "length": 62,
+                            "key": 0
+                        }
+                    ],
+                    "data": {}
+                }
+            ],
+            "entityMap": {
+                "0": {
+                    "type": "LINK",
+                    "mutability": "MUTABLE",
+                    "data": {
+                        "url": "https://en.wikipedia.org/wiki/Dominant_seventh_flat_five_chord",
+                        "targetOption": "_self"
+                    }
+                }
+            }
+        },
+        "clicked": false,
+        "pleaseExpand": false
     }
 ]
